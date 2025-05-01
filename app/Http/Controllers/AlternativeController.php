@@ -123,8 +123,8 @@ class AlternativeController extends Controller
          }
      
          $alternative->update([
-             'nama' => $validated['nama'],
-             'nim' => $validated['nim'],
+            //  'nama' => $validated['nama'],
+            //  'nim' => $validated['nim'],
              'password' => $password,
              'data_kriteria' => $dataKriteria,
              'nilai_manual' => $nilaiManual,

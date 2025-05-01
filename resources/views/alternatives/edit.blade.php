@@ -13,15 +13,15 @@
                 @method('PUT')
                 <div class="mb-3">
                     <label for="nama" class="form-label">Name</label>
-                    <input type="text" name="nama" id="nama" class="form-control" value="{{ $alternative->nama }}" required>
+                    <input type="text" name="nama" id="nama" class="form-control" value="{{ $alternative->nama }}" readonly>
                 </div>
                 <div class="mb-3">
                     <label for="nim" class="form-label">NIM</label>
-                    <input type="text" name="nim" id="nim" class="form-control" value="{{ $alternative->nim }}" required>
+                    <input type="text" name="nim" id="nim" class="form-control" value="{{ $alternative->nim }}" readonly>
                 </div>
                 <div class="mb-3">
                     <label for="jurusan" class="form-label">Jurusan</label>
-                    <input type="text" name="jurusan" id="jurusan" class="form-control" value="{{ $alternative->jurusan }}" required>
+                    <input type="text" name="jurusan" id="jurusan" class="form-control" value="{{ $alternative->jurusan }}" readonly>
                 </div>
                 <div class="mb-3">
                     <label for="password" class="form-label">Password (Leave empty to keep current password)</label>
