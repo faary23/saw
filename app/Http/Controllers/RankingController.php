@@ -21,13 +21,14 @@ class RankingController extends Controller
         }
 
         $criterias = Criteria::all(); // Ambil semua kriteria
+        $totalAccepted = Perangkingan::where('status', 1)->count();
         $alternatives = Alternative::where('id', '!=', 1) // Ambil alternatif kecuali ID 1 (admin)
             ->whereHas('perangkingan') // Pastikan ada data perangkingan terkait
             ->with('perangkingan') // Termasuk data perangkingan dalam query
             ->get()
             ->sortBy(fn($alternative) => $alternative->perangkingan->rank ?? PHP_INT_MAX);  // Urutkan berdasarkan ranking
 
-        return view('ranking.index', compact('alternatives', 'criterias'));
+        return view('ranking.index', compact('alternatives', 'criterias', 'totalAccepted'));
     }
 
     // Menampilkan halaman keputusan akhir (terima/tolak)

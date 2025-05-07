@@ -26,7 +26,7 @@ class DashboardController extends Controller
          $totalRanked = Perangkingan::whereNotNull('total_score')->where('total_score','!=','' )->count();
 
         // Hitung jumlah yang diterima (status = 1)
-        $totalAccepted = session('accepted_count', 0);
+        $totalAccepted = Perangkingan::where('status', 1)->count();
 
         // Kirim data ke view
         return view('dashboard.index', compact('totalAlternatives', 'totalBerkas','totalRanked', 'totalAccepted'));

@@ -23,7 +23,7 @@
             <form method="POST" action="{{ route('ranking.setAcceptedCount') }}" class="mb-3">
                 @csrf
                 <label for="accepted_count">Jumlah diterima:</label>
-                <input type="number" name="accepted_count" id="accepted_count"  value="{{ session('accepted_count') }}" min="1" required>
+                <input type="number" name="accepted_count" id="accepted_count"  value="" min="1" required>
                 <button type="submit" >Terapkan</button>
             </form>
             
