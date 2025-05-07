@@ -23,8 +23,8 @@
             <form method="POST" action="{{ route('ranking.setAcceptedCount') }}" class="mb-3">
                 @csrf
                 <label for="accepted_count">Jumlah diterima:</label>
-                <input type="number" name="accepted_count" id="accepted_count" value="{{ session('accepted_count') }}" min="1" required>
-                <button type="submit">Terapkan</button>
+                <input type="number" name="accepted_count" id="accepted_count"  value="{{ session('accepted_count') }}" min="1" required>
+                <button type="submit" >Terapkan</button>
             </form>
             
             <div class="table-responsive">
@@ -44,9 +44,8 @@
                         @foreach($alternatives as $alternative)
                         @php
                             $ranking = $alternative->perangkingan;
-                            $acceptedCount = session('accepted_count', 0);
-                            $rank = $ranking->rank ?? 999;
-                            $isAccepted = $rank > 0 && $rank <= $acceptedCount;
+                            $status = $ranking->status ?? 0; // Mengambil status dari ranking, 0 bisa berarti belum diterima
+                            $isAccepted = $status == 1; // Status 1 untuk diterima, sesuaikan sesuai logika yang Anda inginkan
                         @endphp
                         <tr @if($isAccepted) style="background-color: #d4edda;" @endif>
                             <td>{{ $loop->iteration }}</td>

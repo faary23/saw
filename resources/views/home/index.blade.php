@@ -37,11 +37,8 @@
                         @foreach($alternatives as $alternative)
                         @php
                             $ranking = $alternative->perangkingan;
-                            $data_kriteria = $alternative->data_kriteria ?? [];
-                            $acceptedCount = session('accepted_count', 0);
-                            $rank = $ranking->rank ?? 999;
-                            $isAccepted = $rank > 0 && $rank <= $acceptedCount;
-                            $bgColor = $isAccepted ? '#d4edda' : 'transparent';
+                            $status = $ranking->status ?? 0; // Mengambil status dari ranking, jika tidak ada default ke 0
+                            $bgColor = ($status == 1) ? '#d4edda' : 'transparent'; // Jika status diterima (1), beri warna hijau muda
                         @endphp
                         <tr>
                             <td style="border: 1px solid #000; background-color: {{ $bgColor }};">{{ $ranking->rank ?? '-' }}</td>
@@ -63,6 +60,7 @@
                         </tr>
                         @endforeach
                     </tbody>
+                    
                 </table>
             </div>
         </div>
