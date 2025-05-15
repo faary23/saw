@@ -18,7 +18,6 @@
                 <table class="table table-bordered">
                     <thead>
                         <tr>
-                            <th>Nama</th>
                             <th>Bukti Mahasiswa Aktif</th>
                             <th>KTM</th>
                             <th>CV</th>
@@ -29,7 +28,6 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td>{{ $user->nama }}</td>
                             <td>
                                 @if($user->bukti_mahasiswa_aktif)
                                     <a href="{{ asset($user->bukti_mahasiswa_aktif) }}" target="_blank" class="btn btn-primary btn-sm">Lihat</a>

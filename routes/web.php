@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AlternativeController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\CriteriaController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HomeController;
@@ -56,4 +57,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/ranking/export-pdf/awal', [RankingController::class, 'exportPDFawal'])->name('ranking.exportPDFawal');
     Route::get('/ranking/export-pdf/akhir', [RankingController::class, 'exportPDFakhir'])->name('ranking.exportPDFakhir');
+
+    Route::post('/ubah-password', [UserController::class, 'changePassword'])->name('password.change');
+    Route::post('/change-password', [AuthController::class, 'changePassword'])->name('change-password');
 });

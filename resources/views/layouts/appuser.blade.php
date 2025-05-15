@@ -108,11 +108,30 @@
                             </div>
                         </div>
                         <ul class="navbar-nav flex-row align-items-center ms-auto">
-                            <form action="{{ route('logout') }}" method="POST" class="d-inline" id="logout-form">
-                                @csrf
-                                @method('POST') <!-- Menambahkan metode POST untuk logout -->
-                                <button type="submit" class="btn btn-danger btn-logout">Logout</button>
-                            </form>
+                            <ul class="navbar-nav flex-row align-items-center ms-auto">
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle hide-arrow" href="#" data-bs-toggle="dropdown">
+                                    <i class="bx bx-cog bx-sm"></i>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li>
+                                        <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
+                                            <i class="bx bx-key me-2"></i>
+                                            <span>Ubah Password</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <form action="{{ route('logout') }}" method="POST" id="logout-form">
+                                            @csrf
+                                            <button class="dropdown-item" type="submit">
+                                                <i class="bx bx-power-off me-2"></i>
+                                                <span>Logout</span>
+                                            </button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
                         </ul>
                     </div>
                 </nav>
@@ -132,6 +151,38 @@
         <script src="{{ asset('assets/vendor/js/menu.js') }}"></script>
         <script src="{{ asset('assets/js/main.js') }}"></script>
         <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    </div>
+        <!-- Modal Ubah Password -->
+    <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form method="POST" action="{{ route('change-password') }}">
+        @csrf
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="changePasswordModalLabel">Ubah Password</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+            </div>
+            <div class="modal-body">
+            <div class="mb-3">
+                <label for="current_password" class="form-label">Password Lama</label>
+                <input type="password" class="form-control" name="current_password" required>
+            </div>
+            <div class="mb-3">
+                <label for="new_password" class="form-label">Password Baru</label>
+                <input type="password" class="form-control" name="new_password" required>
+            </div>
+            <div class="mb-3">
+                <label for="new_password_confirmation" class="form-label">Konfirmasi Password Baru</label>
+                <input type="password" class="form-control" name="new_password_confirmation" required>
+            </div>
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+            <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+            </div>
+        </div>
+        </form>
+    </div>
     </div>
 </body>
 

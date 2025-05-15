@@ -73,7 +73,7 @@ class AuthController extends Controller
         $request->validate([
             'nama' => 'required|string|max:255',
             'jurusan' => 'required|string|max:255',
-            'nim' => 'required|string|max:20|unique:alternatives,nim',
+            'nim' => 'required|integer|max:12|unique:alternatives,nim',
             'password' => 'required|string|min:6|confirmed',
         ]);
 
@@ -108,5 +108,23 @@ class AuthController extends Controller
 
         // Redirect ke halaman login atau halaman utama
         return redirect()->route('home'); // Pastikan route 'home' sudah ada di web.php
+    }
+
+        public function changePassword(Request $request)
+    {
+        $request->validate([
+            'current_password' => 'required',
+            'new_password' => 'required|string|min:8|confirmed',
+        ]);
+
+        if (!Hash::check($request->current_password, auth()->user()->password)) {
+            return back()->with('error', 'Password lama salah');
+        }
+
+        auth()->user()->update([
+            'password' => Hash::make($request->new_password),
+        ]);
+
+        return back()->with('success', 'Password berhasil diubah');
     }
 }
