@@ -32,37 +32,19 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="jurusan" class="form-label">Jurusan</label>
-                            <select class="form-control @error('jurusan') is-invalid @enderror" id="jurusan" name="jurusan" required>
-                                <option value="" disabled selected>Pilih Jurusan</option>
-                                <option value="D4-Teknologi Rekayasa Perangkat Lunak">D4-Teknologi Rekayasa Perangkat Lunak</option>
-                                <option value="D4-Teknologi Rekayasa Komputer">D4-Teknologi Rekayasa Komputer</option>
-                                <option value="D4-Bisnis Digital">D4-Bisnis Digital</option>
-                                <option value="D3-Teknik Sipil">D3-Teknik Sipil</option>
-                                <option value="D4-Teknologi Rekayasa Kontruksi Jalan & Jembatan">D4-Teknologi Rekayasa Kontruksi Jalan & Jembatan</option>
-                                <option value="D4-Teknologi Rekayasa Kontruksi Bangunan & Gedung">D4-Teknologi Rekayasa Kontruksi Bangunan & Gedung</option>
-                                <option value="D4-Manajemen Kontruksi">D4-Manajemen Kontruksi</option>
-                                <option value="D4-Teknologi Rekayasa Manufaktur">D4-Teknologi Rekayasa Manufaktur</option>
-                                <option value="D4-Teknologi Teknik Manufaktur Kapal">D4-Teknologi Teknik Manufaktur Kapal</option>
-                                <option value="D4-Agrbisnis">D4-Agrbisnis</option>
-                                <option value="D4-Teknologi Pengolahan Hasil Ternak">D4-Teknologi Pengolahan Hasil Ternak</option>
-                                <option value="D4-Pengembangan Produk Agroindustri">D4-Pengembangan Produk Agroindustri</option>
-                                <option value="D4-Teknologi Budi Daya Perikanan/Teknologi Akuakultur">D4-Teknologi Budi Daya Perikanan/Teknologi Akuakultur</option>
-                                <option value="D4-Teknologi Produksi Tanaman Pangan">D4-Teknologi Produksi Tanaman Pangan</option>
-                                <option value="D4-Teknologi Produksi Ternak">D4-Teknologi Produksi Ternak</option>
-                                <option value="D4-Manajemen Bisnis Pariwisata">D4-Manajemen Bisnis Pariwisata</option>
-                                <option value="D4-Destinasi Pariwisata">D4-Destinasi Pariwisata</option>
-                                <option value="D4-Pengelolaan Perhotelan">D4-Pengelolaan Perhotelan</option>
-                            </select>
-                            @error('jurusan')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            <label for="jurusan" class="form-label">Prodi</label>
+                            <select name="jurusan" class="form-select" required>
+                            <option value="">Pilih Prodi</option>
+                            @foreach(App\Models\Jurusan::all() as $j)
+                                <option value="{{ $j->nama }}">{{ $j->nama }}</option>
+                            @endforeach
+                        </select>
                         </div>
 
 
                         <div class="mb-3">
                             <label for="nim" class="form-label">NIM</label>
-                            <input type="text" class="form-control @error('nim') is-invalid @enderror" id="nim" name="nim" required />
+                            <input type="number" class="form-control @error('nim') is-invalid @enderror" id="nim" name="nim" required />
                             @error('nim')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror

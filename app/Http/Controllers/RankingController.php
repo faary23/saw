@@ -16,8 +16,14 @@ class RankingController extends Controller
     // Menampilkan halaman ranking, hanya untuk admin
     public function index()
     {
-        if (Auth::check() && Auth::user()->id != 1) {
-            return redirect()->route('login');
+        if (!empty(session('role'))) {
+            return redirect()->route('penilaian.index');
+        } else {
+            if (Auth::check()) {
+                if (Auth::user()->id != 1) {
+                    return redirect()->route('login');
+                }
+            }
         }
 
         $criterias = Criteria::all(); // Ambil semua kriteria
@@ -170,55 +176,55 @@ class RankingController extends Controller
     // }
 
     // Menandai calon anggota sebagai diterima
-//     public function addDiterima(Request $request, $alternativeId)
-// {
-//     $ranking = Perangkingan::where('alternative_id', $alternativeId)->first();
+    //     public function addDiterima(Request $request, $alternativeId)
+    // {
+    //     $ranking = Perangkingan::where('alternative_id', $alternativeId)->first();
 
     //     if ($ranking) {
-//         // Tandai sebagai diterima
-//         $ranking->update(['status' => 1]);
-//     }
+    //         // Tandai sebagai diterima
+    //         $ranking->update(['status' => 1]);
+    //     }
 
     //     // Urutkan ulang ranking untuk yang status = 1
-//     $accepted = Perangkingan::where('status', 1)
-//         ->orderByDesc('total_score')
-//         ->get();
+    //     $accepted = Perangkingan::where('status', 1)
+    //         ->orderByDesc('total_score')
+    //         ->get();
 
     //     foreach ($accepted as $index => $item) {
-//         $item->update(['rank' => $index + 1]);
-//     }
+    //         $item->update(['rank' => $index + 1]);
+    //     }
 
     //     return redirect()->route('ranking.index')->with('success', 'Calon anggota telah diterima!');
-// }
+    // }
 
 
     // Menandai calon anggota sebagai ditolak
-//     public function addTolak(Request $request, $alternativeId)
-// {
-//     $request->validate(['keterangan' => 'required|string|max:255']);
+    //     public function addTolak(Request $request, $alternativeId)
+    // {
+    //     $request->validate(['keterangan' => 'required|string|max:255']);
 
     //     $ranking = Perangkingan::where('alternative_id', $alternativeId)->first();
 
     //     if ($ranking) {
-//         // Set status ditolak (3), set rank menjadi 0 dan simpan keterangan
-//         $ranking->update([
-//             'keterangan' => $request->input('keterangan'),
-//             'status' => 3,
-//             'rank' => 0 // Set rank menjadi 0 saat ditolak
-//         ]);
-//     }
+    //         // Set status ditolak (3), set rank menjadi 0 dan simpan keterangan
+    //         $ranking->update([
+    //             'keterangan' => $request->input('keterangan'),
+    //             'status' => 3,
+    //             'rank' => 0 // Set rank menjadi 0 saat ditolak
+    //         ]);
+    //     }
 
     //     // Setelah menolak, update ulang ranking untuk yang masih diterima (status 1)
-//     $accepted = Perangkingan::where('status', 1)
-//         ->orderByDesc('total_score')
-//         ->get();
+    //     $accepted = Perangkingan::where('status', 1)
+    //         ->orderByDesc('total_score')
+    //         ->get();
 
     //     foreach ($accepted as $index => $item) {
-//         $item->update(['rank' => $index + 1]);
-//     }
+    //         $item->update(['rank' => $index + 1]);
+    //     }
 
     //     return redirect()->route('ranking.index')->with('success', 'Calon anggota telah ditolak!');
-// }
+    // }
 
     // Mengekspor hasil ranking awal ke dalam format PDF
     public function exportPDFawal()
@@ -268,6 +274,4 @@ class RankingController extends Controller
         // Panggil fungsi rank() setelah menyimpan data ke session
         return $this->rank();
     }
-
-
 }

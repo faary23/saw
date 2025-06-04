@@ -13,10 +13,16 @@ class PemberkasanUserController extends Controller
 {
     // Menampilkan halaman pemberkasan khusus untuk user (bukan admin)
     public function index()
-    {   
+    {
         // Jika yang login adalah admin (id == 1), tolak akses
-        if (Auth::check() && Auth::user()->id == 1) {
-            return redirect()->route('login')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
+        if (!empty(session('role'))) {
+            return redirect()->route('penilaian.index');
+        } else {
+            if (Auth::check()) {
+                if (Auth::user()->id == 1) {
+                    return redirect()->route('login');
+                }
+            }
         }
 
         // Tampilkan halaman pemberkasan untuk user
@@ -24,7 +30,7 @@ class PemberkasanUserController extends Controller
         return view('pemberkasanuser.index', compact('user'))->with('success', 'Anda login sebagai user.');
     }
 
-     // Menampilkan form edit data pemberkasan
+    // Menampilkan form edit data pemberkasan
     public function edit()
     {
         // Ambil data user dan alternatif terkait
@@ -40,12 +46,12 @@ class PemberkasanUserController extends Controller
     {
         $userId = Auth::id();
         $alternative = Alternative::where('id', $userId)->first();
-    
+
         // Jika data alternatif tidak ditemukan
         if (!$alternative) {
             return redirect()->route('pemberkasanuser.index')->with('error', 'Data pemberkasan tidak ditemukan.');
         }
-    
+
         // Validasi file upload
         $request->validate([
             'bukti_mahasiswa_aktif' => 'nullable|file|mimes:pdf,jpg,jpeg,png',
@@ -54,11 +60,11 @@ class PemberkasanUserController extends Controller
             'formulir_pendaftaran' => 'nullable|file|mimes:pdf,jpg,jpeg,png',
             'foto' => 'nullable|file|mimes:jpg,jpeg,png',
         ]);
-    
+
         // Lokasi folder penyimpanan file
         $folderPath = "public/uploads/pemberkasan/{$alternative->id}/";
         Storage::makeDirectory($folderPath);
-    
+
         $updatedFiles = []; // Untuk mencatat nama file yang berhasil diupdate
         // Cek dan update setiap file
         $fields = ['bukti_mahasiswa_aktif', 'ktm', 'cv', 'formulir_pendaftaran', 'foto'];
@@ -76,16 +82,16 @@ class PemberkasanUserController extends Controller
                 $updatedFiles[] = ucfirst(str_replace('_', ' ', $field)); // Simpan nama file yang diperbarui
             }
         }
-    
+
         $alternative->save();
-    
+
         // Buat pesan sukses dengan daftar file yang diunggah
-        $message = count($updatedFiles) > 0 
-            ? 'File berhasil diperbarui: ' . implode(', ', $updatedFiles) 
+        $message = count($updatedFiles) > 0
+            ? 'File berhasil diperbarui: ' . implode(', ', $updatedFiles)
             : 'Pemberkasan berhasil diperbarui!';
-        
+
         return redirect()->route('pemberkasanuser.index')->with('success', $message);
-    }    
+    }
 
     // Method cadangan untuk update file (tidak dipakai di atas, tapi bisa untuk refactor)
     private function updateFile($request, $alternative, $fieldName, $folderPath)
@@ -104,8 +110,8 @@ class PemberkasanUserController extends Controller
     {
         // Download template jika file tersedia
         $filepath = public_path('template/' . $file);
-        return file_exists($filepath) 
-            ? Response::download($filepath) 
+        return file_exists($filepath)
+            ? Response::download($filepath)
             : redirect()->back()->with('error', 'Gagal Terunduh');
     }
 }

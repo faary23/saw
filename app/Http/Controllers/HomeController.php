@@ -4,34 +4,48 @@ namespace App\Http\Controllers;
 
 use App\Models\Alternative;
 use App\Models\Criteria;
+use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class HomeController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        // Ambil semua kriteria untuk ditampilkan di tabel
         $criterias = Criteria::all();
-
-        // Jumlah peserta yang diterima
-        $acceptedCount = 10; // Ganti sesuai kebutuhan
-
+        $acceptedCount = 10; // sesuaikan sesuai kebutuhan
         session(['accepted_count' => $acceptedCount]);
 
-        // Ambil data alternatif yang memiliki status = 1 dan id != 1
+        $search = $request->input('search');
+
+        // Ambil semua alternatif yang punya relasi perangkingan dan id != 1
         $alternatives = Alternative::where('id', '!=', 1)
-            // ->whereHas('perangkingan', function ($query) {
-            //     $query->where('status', 1);
-            // })
-            // ->with('perangkingan') // Hanya perlu memuat relasi perangkingan
-            // ->get()
-            // ->sortBy(function ($alternative) {
-            //     return $alternative->perangkingan->rank ?? PHP_INT_MAX;
-            // });
             ->whereHas('perangkingan')
             ->with(['perangkingan', 'weightedValues'])
             ->get()
-            ->sortBy(fn($alt) => $alt->perangkingan->rank ?? PHP_INT_MAX);
-            
-        return view('home.index', compact('alternatives', 'criterias'));
+            ->filter(function ($item) use ($search) {
+                if (!$search) return true;
+                return stripos($item->nama, $search) !== false ||
+                       stripos($item->jurusan, $search) !== false;
+            })
+            ->sortBy(fn($item) => $item->perangkingan->rank ?? PHP_INT_MAX)
+            ->values();
+
+        // Manual pagination (karena data sudah collection)
+        $currentPage = LengthAwarePaginator::resolveCurrentPage();
+        $perPage = 10;
+        $currentPageItems = $alternatives->slice(($currentPage - 1) * $perPage, $perPage)->values();
+
+        $paginatedAlternatives = new LengthAwarePaginator(
+            $currentPageItems,
+            $alternatives->count(),
+            $perPage,
+            $currentPage,
+            ['path' => url()->current(), 'query' => $request->query()]
+        );
+
+        return view('home.index', [
+            'alternatives' => $paginatedAlternatives,
+            'criterias' => $criterias
+        ]);
     }
 }

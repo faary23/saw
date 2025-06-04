@@ -29,25 +29,34 @@
                             <label for="nim" class="form-label">NIM</label>
                             <input
                                 type="text"
-                                class="form-control"
+                                class="form-control @error('nim') is-invalid @enderror"
                                 id="nim"
                                 name="nim"
                                 placeholder="Masukkan NIM"
+                                value="{{ old('nim') }}"
                                 required autofocus />
+                            @error('nim')
+                                <div class="text-danger mt-1">{{ $message }}</div>
+                            @enderror
                         </div>
+
                         <div class="mb-6 form-password-toggle">
                             <label class="form-label" for="password">Password</label>
                             <div class="input-group input-group-merge">
                                 <input
                                     type="password"
                                     id="password"
-                                    class="form-control"
+                                    class="form-control @error('password') is-invalid @enderror"
                                     name="password"
                                     placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
                                     aria-describedby="password" />
                                 <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
                             </div>
+                            @error('password')
+                                <div class="text-danger mt-1">{{ $message }}</div>
+                            @enderror
                         </div>
+
                         <div class="mb-6">
                             <button class="btn btn-primary d-grid w-100" type="submit">Login</button>
                             <p class="text-center mt-4">Belum punya akun? <a href="{{ url('/register') }}">Register</a></p>

@@ -8,20 +8,14 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use App\Models\User;
 
-class PemberkasanAdminController extends Controller
+class PemberkasanPenilaiController extends Controller
 {
     // Menampilkan halaman daftar alternatif untuk admin
     public function index(Request $request)
     {
         // Cek apakah user yang login bukan admin, jika iya redirect ke login
-        if (!empty(session('role'))) {
-            return redirect()->route('penilaian.index');
-        } else {
-            if (Auth::check()) {
-                if (Auth::user()->id != 1) {
-                    return redirect()->route('login');
-                }
-            }
+        if (empty(session('role'))) {
+            return redirect()->route('login');
         }
         // Ambil input pencarian dari request
         $search = $request->input('search');
@@ -35,13 +29,13 @@ class PemberkasanAdminController extends Controller
             })
             ->paginate(10); // Menampilkan 10 data per halaman
 
-        return view('pemberkasanadmin.index', compact('alternatives', 'search'));
+        return view('pemberkasanpenilai.index', compact('alternatives', 'search'));
     }
 
     // Menampilkan halaman edit profil admin
     public function edit()
     {
         $user = Auth::user(); // Ambil data user yang sedang login
-        return view('pemberkasanadmin.edit', compact('user')); // Kirim ke view
+        return view('pemberkasanpenilai.edit', compact('user')); // Kirim ke view
     }
 }

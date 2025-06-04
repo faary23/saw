@@ -28,11 +28,17 @@
                 </div>
                 <div class="mb-3">
                     <label for="type" class="form-label">Atribut</label>
-                    <select name="type" class="form-control" required>
-                        <option value="Benefit" {{ old('type') == 'Benefit' ? 'selected' : '' }}>Benefit</option>
-                        <option value="Cost" {{ old('type') == 'Cost' ? 'selected' : '' }}>Cost</option>
+                    <select name="type" id="type" class="form-control" required>
+                      <!-- Placeholder awal yang tidak bisa dipilih sebagai nilai valid -->
+                      <option value="" disabled selected hidden>Pilih Atribut</option>
+                      <option value="Benefit" {{ old('type') == 'Benefit' ? 'selected' : '' }}>
+                        Benefit
+                      </option>
+                      <option value="Cost" {{ old('type') == 'Cost' ? 'selected' : '' }}>
+                        Cost
+                      </option>
                     </select>
-                </div>
+                  </div>
                 <div class="mb-3">
                     <label for="weight" class="form-label">Bobot</label>
                     <input type="number" name="weight" class="form-control" value="{{ old('weight') }}" min="0" required>

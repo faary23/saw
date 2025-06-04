@@ -80,63 +80,15 @@
                 <ul class="menu-inner py-1">
                     <li class="menu-header small text-uppercase"><span class="menu-header-text">Data</span></li>
                     <li class="menu-item">
-                        <!-- Tambahkan menu Dashboard -->
-                        <a href="{{ route('dashboard') }}" class="menu-link mb-2">
-                            <i class="menu-icon tf-icons bx bx-home"></i> <!-- Ikon untuk Dashboard -->
-                            <div class="text-truncate" data-i18n="Dashboard">Dashboard</div>
-                        </a>
-                        <a href="{{ route('pemberkasanadmin.index') }}" class="menu-link mb-2">
-                            <i class="menu-icon tf-icons bx bx-file"></i> <!-- Ganti ikon jadi dokumen -->
-                            <div class="text-truncate" data-i18n="Dashboard">Pemberkasan</div>
-                        </a>
-
-                        <!-- Menu Data Kriteria -->
-                        <a href="{{ route('criteria.index') }}" class="menu-link mb-2">
-                            <i class="menu-icon tf-icons bx bx-chalkboard"></i>
-                            <div class="text-truncate" data-i18n="Data Kriteria">Kriteria</div>
-                        </a>
-
-                        <!-- Menu Sub Criteria -->
-                        <a href="{{ route('sub_criterias.index') }}" class="menu-link mb-2">
-                            <i class="menu-icon tf-icons bx bx-list-ul"></i>
-                            <div class="text-truncate" data-i18n="Sub Criteria">Sub Kiteria</div>
-                        </a>
-
                         <!-- Menu Alternatives -->
-                        <a href="{{ route('alternatives.index') }}" class="menu-link mb-2">
+                        <a href="{{ route('pemberkasanpenilai.index') }}" class="menu-link mb-2">
+                            <i class="menu-icon tf-icons bx bx-folder"></i>
+                            <div class="text-truncate" data-i18n="Pemberkasan">Pemberkasan</div>
+                        </a>
+                        <a href="{{ route('penilaian.index') }}" class="menu-link mb-2">
                             <i class="menu-icon tf-icons bx bx-user"></i>
-                            <div class="text-truncate" data-i18n="Alternatives">Alternative</div>
+                            <div class="text-truncate" data-i18n="Alternatives">Penilaian</div>
                         </a>
-
-                        <!-- Menu Ranking -->
-                    {{-- <li class="menu-item dropdown"> --}}
-                        <a href="{{ route('ranking.index') }}" class="menu-link mb-2">
-                            <i class="menu-icon tf-icons bx bx-trophy"></i>
-                            <div class="text-truncate" data-i18n="Rangking">Rangking</div>
-                        </a>
-
-                        <!-- Menu Manajemen Akun Penilai -->
-                        <a href="{{ route('penilai.index') }}" class="menu-link mb-2">
-                            <i class="menu-icon tf-icons bx bx-id-card"></i>
-                            <div class="text-truncate" data-i18n="Akun Penilai">Akun Penilai</div>
-                        </a>
-
-                        <!-- Menu Manajemen Jurusan -->
-                        <a href="{{ route('jurusan.index') }}" class="menu-link mb-2">
-                            <i class="menu-icon tf-icons bx bx-buildings"></i>
-                            <div class="text-truncate" data-i18n="Manajemen Jurusan">Manajemen Prodi</div>
-                        </a>
-
-                        {{-- <ul class="dropdown-menu">
-                            <li>
-                                <a href="{{ route('ranking.index') }}" class="dropdown-item">Ranking Awal</a>
-                            </li>
-                            <li>
-                                <a href="{{ route('ranking.keputusan') }}" class="dropdown-item">Keputusan Akhir</a>
-                            </li>
-                        </ul>
-                    </li> --}}
-
                     </li>
                 </ul>
             </aside>

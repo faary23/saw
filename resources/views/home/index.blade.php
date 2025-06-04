@@ -20,49 +20,57 @@
     <div class="card">
         <div class="card-body">
             <h1 class="text-center mb-4">Hasil Pengumuman Lolos Seleksi BEM</h1>
-            <div class="table-responsive">
-                <table class="table table-bordered" style="border-collapse: collapse;">
+
+            <!-- Search Form -->
+            <form method="GET" action="{{ route('hasil.index') }}" class="mb-4">
+                <div class="input-group">
+                    <input type="text" name="search" class="form-control" placeholder="Cari Nama atau Jurusan" value="{{ request('search') }}">
+                    <button class="btn btn-primary" type="submit">Cari</button>
+                </div>
+            </form>
+
+            <div class="table-responsive text-nowrap">
+                <table class="table table-bordered">
                     <thead>
-                        <tr style="border: 1px solid #000;">
-                            <th class="text-center" style="border: 1px solid #000;">Rank</th>
-                            <th class="text-center" style="border: 1px solid #000;">Nama</th>
-                            <th class="text-center" style="border: 1px solid #000;">Jurusan</th>
+                        <tr>
+                            <th class="text-center">Rank</th>
+                            <th class="text-center">Nama</th>
+                            <th class="text-center">Jurusan</th>
                             @foreach($criterias as $criteria)
-                                <th class="text-center" style="border: 1px solid #000;">{{ $criteria->name }}</th>
+                                <th class="text-center">{{ $criteria->name }}</th>
                             @endforeach
-                            <th class="text-center" style="border: 1px solid #000;">Total Skor</th>
+                            <th class="text-center">Total Skor</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach($alternatives as $alternative)
-                        @php
-                            $ranking = $alternative->perangkingan;
-                            $status = $ranking->status ?? 0; // Mengambil status dari ranking, jika tidak ada default ke 0
-                            $bgColor = ($status == 1) ? '#d4edda' : 'transparent'; // Jika status diterima (1), beri warna hijau muda
-                        @endphp
-                        <tr>
-                            <td style="border: 1px solid #000; background-color: {{ $bgColor }};">{{ $ranking->rank ?? '-' }}</td>
-                            <td style="border: 1px solid #000; background-color: {{ $bgColor }};">{{ $alternative->nama }}</td>
-                            <td style="border: 1px solid #000; background-color: {{ $bgColor }};">{{ $alternative->jurusan }}</td>
-                            @foreach ($criterias as $criteria)
-                                @php
-                                    $nilai = $alternative->weightedValues
-                                        ->firstWhere('criteria_id', $criteria->id)
-                                        ->weighted_value ?? 0;
-                                @endphp
-                                <td style="border: 1px solid #000; background-color: {{ $bgColor }};">
-                                    {{ number_format($nilai, 2, '.', '') }}
-                                </td>
-                            @endforeach
-                            <td style="border: 1px solid #000; background-color: {{ $bgColor }};">
-                                {{ $ranking ? number_format($ranking->total_score, 2, '.', '') : '0.00' }}
-                            </td>
-                        </tr>
+                            @php
+                                $ranking = $alternative->perangkingan;
+                                $status = $ranking->status ?? 0;
+                                $bgColor = ($status == 1) ? '#d4edda' : 'transparent';
+                            @endphp
+                            <tr>
+                                <td style="background-color: {{ $bgColor }}">{{ $ranking->rank ?? '-' }}</td>
+                                <td style="background-color: {{ $bgColor }}">{{ $alternative->nama }}</td>
+                                <td style="background-color: {{ $bgColor }}">{{ $alternative->jurusan }}</td>
+                                @foreach($criterias as $criteria)
+                                    @php
+                                        $nilai = $alternative->weightedValues
+                                            ->firstWhere('criteria_id', $criteria->id)
+                                            ->weighted_value ?? 0;
+                                    @endphp
+                                    <td style="background-color: {{ $bgColor }}">{{ number_format($nilai, 2, '.', '') }}</td>
+                                @endforeach
+                                <td style="background-color: {{ $bgColor }}">{{ $ranking ? number_format($ranking->total_score, 2, '.', '') : '0.00' }}</td>
+                            </tr>
                         @endforeach
                     </tbody>
-                    
                 </table>
             </div>
+
+            <nav class="mt-3" aria-label="Page navigation">
+                {{ $alternatives->appends(['search' => request('search')])->links('pagination::bootstrap-5') }}
+            </nav>
         </div>
     </div>
 </div>

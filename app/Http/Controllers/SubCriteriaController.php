@@ -13,9 +13,13 @@ class SubCriteriaController extends Controller
     public function index(Request $request)
     {
         // Cek apakah pengguna sudah login dan bukan admin (id 1)
-        if (Auth::check()) {
-            if (Auth::user()->id != 1) {
-                return redirect()->route('login'); // Arahkan ke halaman login jika bukan admin
+        if (!empty(session('role'))) {
+            return redirect()->route('penilaian.index');
+        } else {
+            if (Auth::check()) {
+                if (Auth::user()->id != 1) {
+                    return redirect()->route('login');
+                }
             }
         }
         // Ambil nilai pencarian dari request
@@ -28,14 +32,14 @@ class SubCriteriaController extends Controller
                         $query->where('name', 'like', "%$search%"); // Filter berdasarkan nama kriteria
                     });
             })
-            ->orderBy('created_at', 'desc')// Urutkan berdasarkan tanggal pembuatan sub kriteria
+            ->orderBy('created_at', 'desc') // Urutkan berdasarkan tanggal pembuatan sub kriteria
             ->paginate(5); // Pagination untuk 5 sub kriteria per halaman
 
         // Kembalikan tampilan dengan data sub kriteria dan nilai pencarian
         return view('sub_criterias.index', compact('subCriterias', 'search'));
     }
 
-     // Menampilkan form untuk menambah sub kriteria
+    // Menampilkan form untuk menambah sub kriteria
     public function create()
     {
         // Ambil semua kriteria yang ada untuk ditampilkan di form
@@ -43,7 +47,7 @@ class SubCriteriaController extends Controller
         return view('sub_criterias.create', compact('criterias'));
     }
 
-     // Menyimpan sub kriteria baru
+    // Menyimpan sub kriteria baru
     public function store(Request $request)
     {
         // Validasi input dari form
@@ -53,7 +57,7 @@ class SubCriteriaController extends Controller
             'nilai' => 'required|integer', // Nilai sub kriteria harus berupa integer
         ]);
 
-         // Simpan data sub kriteria ke dalam tabel sub_criterias
+        // Simpan data sub kriteria ke dalam tabel sub_criterias
         SubCriteria::create([
             'criteria_id' => $request->criteria_id,
             'nama_sub' => $request->nama_sub,
@@ -67,7 +71,7 @@ class SubCriteriaController extends Controller
     // Menampilkan form untuk mengedit sub kriteria
     public function edit($id)
     {
-         // Ambil data sub kriteria yang akan diedit berdasarkan ID
+        // Ambil data sub kriteria yang akan diedit berdasarkan ID
         $subCriteria = SubCriteria::findOrFail($id);
         // Ambil semua kriteria yang ada untuk ditampilkan di form
         $criterias = Criteria::all();
@@ -93,7 +97,7 @@ class SubCriteriaController extends Controller
             'nilai' => $request->nilai,
         ]);
 
-         // Arahkan kembali ke daftar sub kriteria dengan pesan sukses
+        // Arahkan kembali ke daftar sub kriteria dengan pesan sukses
         return redirect()->route('sub_criterias.index')->with('success', 'Sub Criteria updated successfully.');
     }
 

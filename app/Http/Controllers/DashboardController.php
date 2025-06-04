@@ -11,9 +11,13 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        if (Auth::check()) {
-            if (Auth::user()->id != 1) {
-                return redirect()->route('login');
+        if (!empty(session('role'))) {
+            return redirect()->route('penilaian.index');
+        } else {
+            if (Auth::check()) {
+                if (Auth::user()->id != 1) {
+                    return redirect()->route('login');
+                }
             }
         }
         // Hitung jumlah calon pendaftar alternatif
@@ -23,12 +27,12 @@ class DashboardController extends Controller
         $totalBerkas = Alternative::whereNotNull('foto')->where('foto', '!=', '')->count();
 
         // Hitung jumlah yang telah dirangking (alternatif yang memiliki nilai perangkingan)
-         $totalRanked = Perangkingan::whereNotNull('total_score')->where('total_score','!=','' )->count();
+        $totalRanked = Perangkingan::whereNotNull('total_score')->where('total_score', '!=', '')->count();
 
         // Hitung jumlah yang diterima (status = 1)
         $totalAccepted = Perangkingan::where('status', 1)->count();
 
         // Kirim data ke view
-        return view('dashboard.index', compact('totalAlternatives', 'totalBerkas','totalRanked', 'totalAccepted'));
+        return view('dashboard.index', compact('totalAlternatives', 'totalBerkas', 'totalRanked', 'totalAccepted'));
     }
 }

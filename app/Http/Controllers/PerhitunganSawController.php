@@ -15,12 +15,18 @@ class PerhitunganSawController extends Controller
     public function index()
     {
         // Cegah akses jika user dengan ID 1 (biasanya admin) mencoba membuka halaman ini
-        if (Auth::check() && Auth::user()->id == 1) {
-            return redirect()->route('login');
-        }
+        //if (!empty(session('role'))) {
+//return redirect()->route('penilaian.index');
+        //} else {
+        //    if (Auth::check()) {
+        //        if (Auth::user()->id != 1) {
+        //            return redirect()->route('login');
+       //         }
+       //     }
+       // }
         // Ambil semua kriteria
         $criterias = Criteria::all();
-        
+
         // Ambil data alternatif (user yang login)
         $userAlternative = Auth::user();
         $criteriaValues = $userAlternative->data_kriteria ?? [];
@@ -38,7 +44,7 @@ class PerhitunganSawController extends Controller
             });
         // Ambil data perangkingan user
         $rangking = Perangkingan::where('alternative_id', $userAlternative->id)
-        ->first(['alternative_id', 'rank', 'total_score', 'keterangan', 'status']);
+            ->first(['alternative_id', 'rank', 'total_score', 'keterangan', 'status']);
 
         // Ambil dan format nilai normalisasi user
         $normalisasi = NormalizedValue::where('alternative_id', $userAlternative->id)
@@ -53,7 +59,7 @@ class PerhitunganSawController extends Controller
             ->orderBy('created_at', 'desc')
             ->paginate(5);
 
-         // Tampilkan view dengan data yang diperlukan
+        // Tampilkan view dengan data yang diperlukan
         return view('perhitungansaw.index', compact('subCriterias', 'criterias', 'userAlternative', 'criteriaValues', 'subCriteriaValues', 'normalisasi', 'weightvalue', 'rangking'));
     }
 }

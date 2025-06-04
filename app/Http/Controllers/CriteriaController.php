@@ -3,17 +3,25 @@
 namespace App\Http\Controllers;
 
 use App\Models\Criteria;
+use App\Models\Penilai;
+use App\Models\SubCriteria;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str; // untuk generate password sementara (opsional)
 
 class CriteriaController extends Controller
 {
     // Menampilkan semua kriteria (hanya bisa diakses admin)
     public function index()
     {
-        if (Auth::check()) {
-            if (Auth::user()->id != 1) {
-                return redirect()->route('login'); // Akses selain admin diarahkan ke login
+        if (!empty(session('role'))) {
+            return redirect()->route('penilaian.index');
+        } else {
+            if (Auth::check()) {
+                if (Auth::user()->id != 1) {
+                    return redirect()->route('login');
+                }
             }
         }
         $criterias = Criteria::all(); // Ambil semua kriteria dari database
@@ -27,21 +35,43 @@ class CriteriaController extends Controller
     }
 
     // Simpan kriteria baru
-    public function store(Request $request)
+   public function store(Request $request)
     {
-        // Validasi data masukan
         $validated = $request->validate([
             'kode' => 'required|unique:criterias,kode|max:10',
             'name' => 'required|string|max:255',
             'type' => 'required|in:Benefit,Cost',
             'weight' => 'required|integer|min:1|max:100',
-            'keterangan' => 'nullable|string|max:255', // Menambahkan validasi keterangan
+            'keterangan' => 'nullable|string|max:255',
         ]);
 
-        // Simpan ke database
-        Criteria::create($validated);
-        return redirect()->route('criteria.index')->with('success', 'Criteria added successfully.');
+        $criteria = Criteria::create($validated);
+
+        // Hitung urutan ke berapa kriteria ini
+        $totalCriterias = Criteria::count();
+        $role = 'c' . $totalCriterias; // c1, c2, ...
+
+        // Buat penilai dengan nim = admin + role, password = admin123
+        Penilai::create([
+            'nama' => 'Penilai ' . strtoupper($role),
+            'nim' => 'admin' . $role, // contoh: adminc1
+            'password' => Hash::make('admin123'),
+            'role' => $role, // role: c1, c2, ...
+        ]);
+
+        // Buat penilai khusus untuk kriteria dengan role 'penilai'
+      //  $nimBaru = 'penilai_' . strtolower($criteria->kode) . '_' . time();
+
+      //  Penilai::create([
+       //     'nama' => 'Penilai untuk ' . $criteria->name,
+      //      'nim' => $nimBaru,
+       //     'password' => Hash::make('admin123'),
+        //    'role' => 'penilai',
+       // ]);
+
+        return redirect()->route('criteria.index')->with('success', 'Criteria added successfully and penilai created.');
     }
+
 
     // Tampilkan form edit kriteria
     public function edit($id)
@@ -68,12 +98,23 @@ class CriteriaController extends Controller
         return redirect()->route('criteria.index')->with('success', 'Criteria updated successfully.');
     }
 
-     // Hapus kriteria berdasarkan ID
     public function destroy($id)
     {
         $criteria = Criteria::findOrFail($id);
-        $criteria->delete(); // Hapus dari database
 
-        return redirect()->route('criteria.index')->with('success', 'Criteria deleted successfully.');
+        // Ambil kode dari criteria (tanpa ubah huruf atau pakai strtolower jika perlu)
+        $kode = strtolower($criteria->kode);
+
+        // Hapus data penilai yang memiliki kode yang sama
+        Penilai::where('role', $kode)->delete();
+
+        // Hapus sub_criteria berdasarkan id criteria
+        SubCriteria::where('criteria_id', $criteria->id)->delete();
+
+        // Hapus criteria
+        $criteria->delete();
+
+        return redirect()->route('criteria.index')->with('success', 'Criteria, its sub-criteria, and related penilai data deleted successfully.');
     }
+
 }

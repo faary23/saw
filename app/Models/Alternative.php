@@ -24,19 +24,28 @@ class Alternative extends Authenticatable
     {
         return $this->hasMany(WeightedValue::class, 'alternative_id');
     }
-
-    public function getManualNilaiAttribute()
-{
-    $result = [];
-
-    foreach ($this->data_kriteria as $criteriaId => $subId) {
-        $sub = \App\Models\SubCriteria::find($subId);
-        if ($sub) {
-            $result[$criteriaId] = $sub->nilai;
-        }
+    // Di model Alternative.php
+    public function getDataKriteriaAttribute($value)
+    {
+        return is_string($value) ? json_decode($value, true) : $value;
     }
 
-    return $result;
-}
+    public function getNilaiManualAttribute()
+    {
+        $result = [];
 
+        foreach ($this->data_kriteria as $criteriaId => $subId) {
+            // Jika isinya numeric langsung (bukan subId)
+            if (is_numeric($subId)) {
+                $result[$criteriaId] = $subId;
+            } else {
+                $sub = \App\Models\SubCriteria::find($subId);
+                if ($sub) {
+                    $result[$criteriaId] = $sub->nilai;
+                }
+            }
+        }
+
+        return $result;
+    }
 }
